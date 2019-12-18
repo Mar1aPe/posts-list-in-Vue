@@ -1,6 +1,6 @@
 <template>
-  <div id="posts-list" >
-    <ul class="list" v-if="posts && posts.length" >
+  <div id="posts-list">
+    <ul class="list" v-if="posts && posts.length">
       <li class="post" v-for="post of posts" v-bind:key="post.id">
         <h4>{{post.title}}</h4>
 
@@ -8,13 +8,7 @@
         <br />
         <a class v-if="!readMoreActivated" @click="activateReadMore" href="#">Read more...</a>
         <span v-if="readMoreActivated" v-html="post.body"></span>
-        <p>
-          {{authors.filter(author => {
-          return author.id== post.userId ? author.name : '' ;
-          })}}
-        </p>
-
-        <!-- <Author v:bind:id="post.userId" /> -->
+        <p>{{authors[post.userId].name}}</p>
       </li>
     </ul>
     <ul class="pagination"></ul>
@@ -23,16 +17,14 @@
 
 <script>
 import axios from "axios";
-import Author from "./Author.vue";
 
 export default {
   name: "PostsList",
 
-  components: Author,
   data() {
     return {
       posts: [],
-      authors: [],
+      authors: {},
       readMoreActivated: false
     };
   },
@@ -46,15 +38,12 @@ export default {
   created() {
     axios.get("http://jsonplaceholder.typicode.com/posts").then(response => {
       this.posts = response.data;
-      /* eslint-disable no-console */
-      console.log(response.data);
-      /* eslint-disable no-console */
     });
     axios.get("http://jsonplaceholder.typicode.com/users").then(response => {
-      this.authors = response.data;
-      /* eslint-disable no-console */
-      console.log(response.data);
-      /* eslint-disable no-console */
+      this.authors = response.data.reduce((acc, value) => {
+        acc[value.id] = value;
+        return acc;
+      }, {});
     });
   }
 };
