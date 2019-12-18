@@ -1,22 +1,35 @@
 <template>
   <div id="posts-list">
-    <ul class="list" v-if="posts && posts.length">
-      <li class="post" v-for="(post, index) in posts" v-bind:key="post.id">
+    <paginate
+      name="posts"
+      :list="posts"
+      :per="10"
+      class="paginate-list"
+      v-if="posts && posts.length"
+    >
+      <li class="post" v-for="(post, index) in paginated('posts')" v-bind:key="post.id">
         <h4>{{post.title}}</h4>
 
         <span v-if="!readMoreActivated">{{post.body.slice(0, post.body.length/2)}}</span>
         <br />
-        <a class v-if="!readMoreActivated" @click="activateReadMore()" href="#">Read more...</a>
+        <a
+          class="readMore"
+          v-if="!readMoreActivated"
+          @click="activateReadMore"
+          href="#"
+        >Read more...</a>
         <span v-if="readMoreActivated" v-html="post.body"></span>
         <p>{{authors[post.userId].name}}</p>
         <button @click="$delete(posts, index)">X</button>
       </li>
-    </ul>
+    </paginate>
+    <paginate-links for="posts" :show-step-links="true"></paginate-links>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+
 
 export default {
   name: "PostsList",
@@ -24,6 +37,7 @@ export default {
   data() {
     return {
       posts: [],
+      paginate: ["posts"],
       authors: {},
       readMoreActivated: false
     };
