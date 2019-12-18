@@ -23,13 +23,12 @@
         <button @click="$delete(posts, index)">X</button>
       </li>
     </paginate>
-    <paginate-links for="posts" :show-step-links="true"></paginate-links>
+    <paginate-links for="posts" :show-step-links="true" :async="true"></paginate-links>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-
 
 export default {
   name: "PostsList",
@@ -64,7 +63,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 h3 {
   margin: 40px 0 0;
 }
@@ -78,5 +77,29 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.paginate-links {
+  background-color: #42b983;
+  user-select: none;
+  display: flex;
+  font-size: 30px;
+  justify-content: center;
+
+  a {
+    cursor: pointer;
+  }
+  li.active a {
+    font-weight: bold;
+  }
+  li.next:before {
+    content: " | ";
+    margin-right: 13px;
+    color: #ddd;
+  }
+  li.disabled a {
+    color: #ccc;
+    cursor: no-drop;
+  }
 }
 </style>
